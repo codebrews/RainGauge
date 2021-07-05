@@ -51,7 +51,7 @@ namespace RainGauge
         static double IncreaseWaterDemands(int daysSinceWatering, int[] avgTemps)
         {
             double increasedDemand = 0;
-            int avgTemp;
+            double avgTemp;
             for (int i = 1; i <= daysSinceWatering; i++)
             {
                 avgTemp = avgTemps[avgTemps.Length - i];
