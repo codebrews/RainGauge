@@ -6,13 +6,17 @@ namespace RainGauge
     {
         static void Main(string[] args)
         {
-            double[] inchesRainfallDaily = { .1, .2, .3, .4, .5, .6 };
+            Console.WriteLine(DaysSinceWatering());
 
-            int[] avgTempsDaily = { 80, 75, 60, 90, 88, 73 };
+            //double[] inchesRainfallDaily = { .1, .2, .3, .4, .5, .6 };
 
-            Console.WriteLine(TotalRainfall(5, inchesRainfallDaily));
+            //int[] avgTempsDaily = { 80, 75, 60, 90, 88, 73 };
 
-            Console.WriteLine(IncreaseWaterDemands(6, avgTempsDaily));
+            //DaysSinceWatering();
+
+            //Console.WriteLine(TotalRainfall(5, inchesRainfallDaily));
+
+            //Console.WriteLine(IncreaseWaterDemands(6, avgTempsDaily));
 
             //DailyWeatherReport[] dailyWeatherReports = {
             //    new DailyWeatherReport(.1, 80),
@@ -26,11 +30,19 @@ namespace RainGauge
 
         static int DaysSinceWatering()
         {
-            Console.WriteLine("Answer the following question without taking rainfal into consideration.");
-            Console.Write("How many days have passed without watering?: ");
+            Console.Write("Not counting rainfall, how many full days have passed since your garden was watered?: ");
             string input = Console.ReadLine();
             int daysSinceWatering;
             int.TryParse(input, out daysSinceWatering);
+            while (daysSinceWatering <= 0)
+            {
+                Console.WriteLine("You need to enter a positive whole number greater than 0.");
+                Console.WriteLine("If you meant to enter 0 then you do not need to water.");
+                Console.WriteLine("Try again.");
+                Console.Write("How many days have passed without watering?: ");
+                input = Console.ReadLine();
+                int.TryParse(input, out daysSinceWatering);
+            }
             if (daysSinceWatering > 6)
             {
                 daysSinceWatering = 6;
@@ -38,14 +50,10 @@ namespace RainGauge
             return daysSinceWatering;
         }
 
-        static double TotalRainfall(int daysSinceWatering, double[] inchesRainfallDaily)
+        static double BaseWaterNeed(int daysSinceWatering)
         {
-            double totalRainfall = 0;
-            for (int i = 1; i <= daysSinceWatering; i++)
-            {
-                totalRainfall += inchesRainfallDaily[inchesRainfallDaily.Length - i];
-            }
-            return totalRainfall;
+            double need = (double)daysSinceWatering / 7;
+            return need;
         }
 
         static double IncreaseWaterDemands(int daysSinceWatering, int[] avgTemps)
@@ -63,9 +71,19 @@ namespace RainGauge
             return increasedDemand;
         }
 
+        static double TotalRainfall(int daysSinceWatering, double[] inchesRainfallDaily)
+        {
+            double totalRainfall = 0;
+            for (int i = 1; i <= daysSinceWatering; i++)
+            {
+                totalRainfall += inchesRainfallDaily[inchesRainfallDaily.Length - i];
+            }
+            return totalRainfall;
+        }
+
         //static bool shouldIWater()
         //{
-        //    double waterNeeded = 1;
+        //    double waterNeeded = 0;
         //    Console.Write("How many days have passed since you last watered");
         //    string input = Console.ReadLine();
         //    int daysSinceWatering;
