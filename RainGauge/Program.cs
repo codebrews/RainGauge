@@ -6,7 +6,11 @@ namespace RainGauge
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(DaysSinceWatering());
+            //Console.WriteLine(DaysSinceWatering());
+
+            string apiKey = System.IO.File.ReadAllText("./key.txt");
+            string baseQuery = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timelin" +
+                $"e/3738%20Rosemont%20Blvd/last7days?unitGroup=us&key={apiKey}&include=obs";
 
             //double[] inchesRainfallDaily = { .1, .2, .3, .4, .5, .6 };
 
