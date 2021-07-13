@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 
 namespace RainGauge
 {
@@ -6,11 +7,11 @@ namespace RainGauge
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine(DaysSinceWatering());
+            Query7DayWeatherHistory();
 
-            string apiKey = System.IO.File.ReadAllText("./key.txt");
-            string baseQuery = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timelin" +
-                $"e/3738%20Rosemont%20Blvd/last7days?unitGroup=us&key={apiKey}&include=obs";
+            Console.ReadLine();
+
+            //Console.WriteLine(DaysSinceWatering());
 
             //double[] inchesRainfallDaily = { .1, .2, .3, .4, .5, .6 };
 
@@ -85,33 +86,25 @@ namespace RainGauge
             return totalRainfall;
         }
 
-        //static bool shouldIWater()
-        //{
-        //    double waterNeeded = 0;
-        //    Console.Write("How many days have passed since you last watered");
-        //    string input = Console.ReadLine();
-        //    int daysSinceWatering;
-        //    int.TryParse(input, out daysSinceWatering);
-        //    if (daysSinceWatering > 7)
-        //    {
-        //        daysSinceWatering = 7;
-        //    }
-        //    for (int i = 0; i < daysSinceWatering; i++)
-        //    {
-        //        if 
-        //    }
+        static async void Query7DayWeatherHistory()
+        {
+            string apiKey = System.IO.File.ReadAllText("./key.txt");
+            string zipCode = "40218";
+            string queryUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/" +
+                $"services/timeline/{zipCode}/last7days?unitGroup=us&key={apiKey}&include=histfcst";
 
-        //        //if avgTemp > 60: value += (avgTemp - 60) / 70 * .5
-
-        //        //value -= total rainfall(7
-        //    if (waterNeeded >= 1)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(queryUrl),
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                string body = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(body);
+            }
+        }
     }
 }
