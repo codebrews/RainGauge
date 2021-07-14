@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 
 namespace RainGauge
 {
@@ -7,9 +9,7 @@ namespace RainGauge
     {
         static void Main(string[] args)
         {
-            Query7DayWeatherHistory();
-
-            Console.ReadLine();
+            DeserializeWeather(Query7DayWeatherHistory());
 
             //Console.WriteLine(DaysSinceWatering());
 
@@ -86,24 +86,33 @@ namespace RainGauge
             return totalRainfall;
         }
 
-        static async void Query7DayWeatherHistory()
+        static string Query7DayWeatherHistory()
         {
             string apiKey = System.IO.File.ReadAllText("./key.txt");
             string zipCode = "40218";
             string queryUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/" +
                 $"services/timeline/{zipCode}/last7days?unitGroup=us&key={apiKey}&include=histfcst";
-
             var client = new HttpClient();
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(queryUrl),
             };
-            using (var response = await client.SendAsync(request))
+            using var response = client.Send(request);
+            response.EnsureSuccessStatusCode();
+            string body = response.Content.ReadAsStringAsync().Result;
+            return body;
+        }
+
+        static void DeserializeWeather(string weatherJson)
+        {
+            APIWeatherData weatherData = JsonSerializer.Deserialize<APIWeatherData>(weatherJson);
+
+            foreach(var day in weatherData.Days)
             {
-                response.EnsureSuccessStatusCode();
-                string body = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(body);
+                Console.WriteLine($"Date: {day.Date}");
+                Console.WriteLine($"AvgTemp: {day.AvgTemp}");
+                Console.WriteLine($"Precipitation: {day.Precipitation}");
             }
         }
     }

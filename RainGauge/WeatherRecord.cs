@@ -1,15 +1,24 @@
 ﻿using System;
+using System.Text.Json.Serialization;
+
 namespace RainGauge
 {
     public class WeatherRecord
     {
-        public string datetime { get; set; }
-        public double temp { get; set; }
-        public double dew { get; set; }
-        public double humidity { get; set; }
-        public double precip { get; set; }
-        public object precipprob { get; set; }
-        public double precipcover { get; set; }
+        [JsonPropertyName("datetime")]
+        public string Date { get; set; }
+        [JsonPropertyName("temp")]
+        public double Temperature { get; set; }
+        [JsonPropertyName("dew")]
+        public double Dew { get; set; }
+        [JsonPropertyName("humidity")]
+        public double Humidity { get; set; }
+        [JsonPropertyName("precip")]
+        public double Precipitation { get; set; }
+        [JsonPropertyName("precipprob")]
+        public object PrecipitationProbability { get; set; }
+        [JsonPropertyName("precipcover")]
+        public double PrecipitationCover { get; set; }
     }
 }
 
