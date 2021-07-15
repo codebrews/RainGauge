@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace RainGauge
 {
@@ -9,7 +10,13 @@ namespace RainGauge
     {
         static void Main(string[] args)
         {
-            DeserializeWeather(Query7DayWeatherHistory());
+            var weatherData = DeserializeWeather(Query7DayWeatherHistory());
+            foreach (var day in weatherData.days)
+            {
+                Console.WriteLine($"Date: {day.Date}");
+                Console.WriteLine($"AvgTemp: {day.AvgTemperature}");
+                Console.WriteLine($"Precipitation: {day.Precipitation}");
+            }
 
             //Console.WriteLine(DaysSinceWatering());
 
@@ -91,7 +98,7 @@ namespace RainGauge
             string apiKey = System.IO.File.ReadAllText("./key.txt");
             string zipCode = "40218";
             string queryUrl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/" +
-                $"services/timeline/{zipCode}/last7days?unitGroup=us&key={apiKey}&include=histfcst";
+                $"services/timeline/{zipCode}/last7days?unitGroup=us&key={apiKey}&include=obs";
             var client = new HttpClient();
             var request = new HttpRequestMessage
             {
@@ -104,16 +111,10 @@ namespace RainGauge
             return body;
         }
 
-        static void DeserializeWeather(string weatherJson)
+        static APIWeatherData DeserializeWeather(string weatherJson)
         {
-            APIWeatherData weatherData = JsonSerializer.Deserialize<APIWeatherData>(weatherJson);
-
-            foreach(var day in weatherData.Days)
-            {
-                Console.WriteLine($"Date: {day.Date}");
-                Console.WriteLine($"AvgTemp: {day.AvgTemp}");
-                Console.WriteLine($"Precipitation: {day.Precipitation}");
-            }
+            APIWeatherData weatherData = JsonConvert.DeserializeObject<APIWeatherData>(weatherJson);
+            return weatherData;
         }
     }
 }

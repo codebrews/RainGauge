@@ -10,5 +10,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="key.txt" />
+    <None Remove="Newtonsoft.Json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 </Project>
