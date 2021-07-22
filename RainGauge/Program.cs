@@ -10,34 +10,22 @@ namespace RainGauge
     {
         static void Main(string[] args)
         {
-            var weatherData = DeserializeWeather(Query7DayWeatherHistory());
-            foreach (var day in weatherData.days)
-            {
-                Console.WriteLine($"Date: {day.Date}");
-                Console.WriteLine($"AvgTemp: {day.AvgTemperature}");
-                Console.WriteLine($"Precipitation: {day.Precipitation}");
-            }
+            string weatherJson = Query7DayWeatherHistory();
 
-            //Console.WriteLine(DaysSinceWatering());
+            APIWeatherData weatherData = DeserializeWeather(weatherJson);
 
-            //double[] inchesRainfallDaily = { .1, .2, .3, .4, .5, .6 };
+            int daysSinceWatering = DaysSinceWatering();
 
-            //int[] avgTempsDaily = { 80, 75, 60, 90, 88, 73 };
+            double baseWaterNeed = BaseWaterNeed(daysSinceWatering);
 
-            //DaysSinceWatering();
+            double addedWaterDemand = IncreaseWaterDemands(daysSinceWatering, weatherData);
 
-            //Console.WriteLine(TotalRainfall(5, inchesRainfallDaily));
+            double totalRainfall = TotalRainfall(daysSinceWatering, weatherData);
 
-            //Console.WriteLine(IncreaseWaterDemands(6, avgTempsDaily));
+            Console.WriteLine($"In the past {daysSinceWatering} days it has rained {totalRainfall} inches. " +
+                $"Based on temperature you have and increased water demand of {addedWaterDemand} inches");
 
-            //DailyWeatherReport[] dailyWeatherReports = {
-            //    new DailyWeatherReport(.1, 80),
-            //    new DailyWeatherReport(.2, 75),
-            //    new DailyWeatherReport(.3, 60),
-            //    new DailyWeatherReport(.4, 90),
-            //    new DailyWeatherReport(.5, 88),
-            //    new DailyWeatherReport(.6, 73)
-            //};
+            ShouldWater(baseWaterNeed, addedWaterDemand, totalRainfall);
         }
 
         static int DaysSinceWatering()
@@ -57,7 +45,7 @@ namespace RainGauge
             }
             if (daysSinceWatering > 6)
             {
-                daysSinceWatering = 6;
+                daysSinceWatering = 7;
             }
             return daysSinceWatering;
         }
@@ -68,13 +56,13 @@ namespace RainGauge
             return need;
         }
 
-        static double IncreaseWaterDemands(int daysSinceWatering, int[] avgTemps)
+        static double IncreaseWaterDemands(int daysSinceWatering, APIWeatherData weatherData)
         {
             double increasedDemand = 0;
             double avgTemp;
             for (int i = 1; i <= daysSinceWatering; i++)
             {
-                avgTemp = avgTemps[avgTemps.Length - i];
+                avgTemp = weatherData.Days[weatherData.Days.Count - i].Temp;
                 if (avgTemp > 60)
                 {
                     increasedDemand += (avgTemp - 60) / 70 * .5;
@@ -83,14 +71,32 @@ namespace RainGauge
             return increasedDemand;
         }
 
-        static double TotalRainfall(int daysSinceWatering, double[] inchesRainfallDaily)
+        static double TotalRainfall(int daysSinceWatering, APIWeatherData weatherData)
         {
             double totalRainfall = 0;
             for (int i = 1; i <= daysSinceWatering; i++)
             {
-                totalRainfall += inchesRainfallDaily[inchesRainfallDaily.Length - i];
+                Console.WriteLine(totalRainfall);
+                Console.WriteLine(totalRainfall);
+                totalRainfall += weatherData.Days[weatherData.Days.Count - i].Precip;
+                Console.WriteLine(totalRainfall);
             }
             return totalRainfall;
+        }
+
+        static void ShouldWater(double baseWaterNeed, double addedWaterDemand, double totalRainfall)
+        {
+            double waterNeed = baseWaterNeed;
+            waterNeed += addedWaterDemand;
+            waterNeed -= totalRainfall;
+            if (waterNeed >= 1)
+            {
+                Console.WriteLine("You should water!");
+            }
+            else
+            {
+                Console.WriteLine("You do not need to water today.");
+            }
         }
 
         static string Query7DayWeatherHistory()

@@ -5,23 +5,28 @@ using System.Text.Json.Serialization;
 
 namespace RainGauge
 {
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     public class Day
     {
         [JsonPropertyName("datetime")]
-        public string Date { get; set; }
+        public string DateTime { get; set; }
+
         [JsonPropertyName("temp")]
-        public double AvgTemperature { get; set; }
+        public double Temp { get; set; }
+
         [JsonPropertyName("dew")]
         public double Dew { get; set; }
+
         [JsonPropertyName("humidity")]
         public double Humidity { get; set; }
+
         [JsonPropertyName("precip")]
-        public double Precipitation { get; set; }
+        public double Precip { get; set; }
+
         [JsonPropertyName("precipprob")]
-        public object PrecipitationProbability { get; set; }
+        public object PrecipProb { get; set; }
+
         [JsonPropertyName("precipcover")]
-        public double PrecipitationCover { get; set; }
+        public double PrecipCover { get; set; }
     }
 
     public class APIWeatherData
