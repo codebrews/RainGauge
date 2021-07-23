@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using Newtonsoft.Json;
+using static RainGauge.APIWeatherData;
+using System.Linq;
 
 namespace RainGauge
 {
@@ -23,7 +25,7 @@ namespace RainGauge
             double totalRainfall = TotalRainfall(daysSinceWatering, weatherData);
 
             Console.WriteLine($"In the past {daysSinceWatering} days it has rained {totalRainfall} inches. " +
-                $"Based on temperature you have and increased water demand of {addedWaterDemand} inches");
+                $"Based on temperature you have and increased water demand of {addedWaterDemand} inches.");
 
             ShouldWater(baseWaterNeed, addedWaterDemand, totalRainfall);
         }
@@ -43,7 +45,7 @@ namespace RainGauge
                 input = Console.ReadLine();
                 int.TryParse(input, out daysSinceWatering);
             }
-            if (daysSinceWatering > 6)
+            if (daysSinceWatering >= 7)
             {
                 daysSinceWatering = 7;
             }
@@ -56,32 +58,42 @@ namespace RainGauge
             return need;
         }
 
+        //Returns increased water demand by factoring an increase of .5 inches for each 10 degrees above 60.
+        //This formula is for weekly increased demand so it divides by 7 to get the daily increase.
         static double IncreaseWaterDemands(int daysSinceWatering, APIWeatherData weatherData)
         {
-            double increasedDemand = 0;
-            double avgTemp;
-            for (int i = 1; i <= daysSinceWatering; i++)
-            {
-                avgTemp = weatherData.Days[weatherData.Days.Count - i].Temp;
-                if (avgTemp > 60)
-                {
-                    increasedDemand += (avgTemp - 60) / 70 * .5;
-                }
-            }
-            return increasedDemand;
+            //double increasedDemand = 0;
+            double baseTemp = 60;
+            double tempFactor = 10;
+            double waterFactor = .5;
+            double daysPerWeek = 7;
+
+            //for (int i = 1; i <= daysSinceWatering; i++)
+            //{
+            //    double avgTemp = weatherData.Days[weatherData.Days.Count - i].Temp;
+            //    if (avgTemp > baseTemp)
+            //    {
+            //        increasedDemand += (avgTemp - baseTemp) / tempFactor * waterFactor / daysPerWeek;
+            //    }
+            //}
+            //return increasedDemand;
+
+            return weatherData.Days.Reverse<Day>()
+                .Take(daysSinceWatering)
+                .Where(d => d.Temp > baseTemp)
+                .Sum(d => ((d.Temp - baseTemp) / tempFactor * waterFactor / daysPerWeek));
         }
 
         static double TotalRainfall(int daysSinceWatering, APIWeatherData weatherData)
         {
-            double totalRainfall = 0;
-            for (int i = 1; i <= daysSinceWatering; i++)
-            {
-                Console.WriteLine(totalRainfall);
-                Console.WriteLine(totalRainfall);
-                totalRainfall += weatherData.Days[weatherData.Days.Count - i].Precip;
-                Console.WriteLine(totalRainfall);
-            }
-            return totalRainfall;
+            //double totalRainfall = 0;
+            //for (int i = 1; i <= daysSinceWatering; i++)
+            //{
+            //    totalRainfall += weatherData.Days[weatherData.Days.Count - i].Precip;
+            //}
+            //return totalRainfall;
+
+            return weatherData.Days.Reverse<Day>().Take(daysSinceWatering).Sum(d => d.Precip);
         }
 
         static void ShouldWater(double baseWaterNeed, double addedWaterDemand, double totalRainfall)
