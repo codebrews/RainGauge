@@ -9,26 +9,11 @@ namespace RainGauge
 {
     public class Day
     {
-        [JsonPropertyName("datetime")]
-        public string DateTime { get; set; }
+        [JsonProperty(propertyName: "temp")]
+        public double Temperature { get; set; }
 
-        [JsonPropertyName("temp")]
-        public double Temp { get; set; }
-
-        [JsonPropertyName("dew")]
-        public double Dew { get; set; }
-
-        [JsonPropertyName("humidity")]
-        public double Humidity { get; set; }
-
-        [JsonPropertyName("precip")]
-        public double Precip { get; set; }
-
-        [JsonPropertyName("precipprob")]
-        public object PrecipProb { get; set; }
-
-        [JsonPropertyName("precipcover")]
-        public double PrecipCover { get; set; }
+        [JsonProperty(propertyName: "precip")]
+        public double Precipitation { get; set; }
     }
 
     public class APIWeatherData

@@ -54,8 +54,8 @@ namespace RainGauge
 
             return weatherData.Days.Reverse<Day>()
                 .Take(daysSinceWatering)
-                .Where(d => d.Temp > baseTemp)
-                .Sum(d => ((d.Temp - baseTemp) / tempFactor * waterFactor / daysPerWeek));
+                .Where(d => d.Temperature > baseTemp)
+                .Sum(d => ((d.Temperature - baseTemp) / tempFactor * waterFactor / daysPerWeek));
         }
 
         public static double TotalRainfall(int daysSinceWatering, APIWeatherData weatherData)
@@ -67,7 +67,7 @@ namespace RainGauge
             //}
             //return totalRainfall;
 
-            return weatherData.Days.Reverse<Day>().Take(daysSinceWatering).Sum(d => d.Precip);
+            return weatherData.Days.Reverse<Day>().Take(daysSinceWatering).Sum(d => d.Precipitation);
         }
 
         public static void ShouldWater(double baseWaterNeed, double addedWaterDemand, double totalRainfall)
@@ -89,7 +89,7 @@ namespace RainGauge
         {
             return weatherData.Days.Reverse<Day>()
                 .Take(daysSinceWatering)
-                .Average(d => d.Temp);
+                .Average(d => d.Temperature);
         }
 
         public static double FahrenheitToCelcius(double degreesF)
