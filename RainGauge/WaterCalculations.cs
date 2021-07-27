@@ -84,5 +84,24 @@ namespace RainGauge
                 Console.WriteLine("You do not need to water today.");
             }
         }
+
+        public static double AverageTemp(int daysSinceWatering, APIWeatherData weatherData)
+        {
+            return weatherData.Days.Reverse<Day>()
+                .Take(daysSinceWatering)
+                .Average(d => d.Temp);
+        }
+
+        public static double FahrenheitToCelcius(double degreesF)
+        {
+            double degreesC = (degreesF - 32) * 5 / 9;
+            return Math.Round(degreesC, 1);
+        }
+
+        public static double InchesToCentimeters(double inches)
+        {
+            double centimeters = inches * 2.54;
+            return Math.Round(centimeters, 1);
+        }
     }
 }

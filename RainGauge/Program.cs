@@ -18,8 +18,12 @@ namespace RainGauge
 
             double totalRainfall = TotalRainfall(daysSinceWatering, weatherData);
 
+            double avgTemp = AverageTemp(daysSinceWatering, weatherData);
+
             Console.WriteLine($"In the past {daysSinceWatering} days it has rained {totalRainfall} inches. " +
-                $"Based on temperature you have and increased water demand of {addedWaterDemand} inches.");
+                $"The average temperature has been {Math.Round(avgTemp, 1)}° F ({FahrenheitToCelcius(avgTemp)}° C) " +
+                $"This has created an added water demand of {Math.Round(addedWaterDemand, 1)} inches " +
+                $"({InchesToCentimeters(addedWaterDemand)}cm).");
 
             ShouldWater(baseWaterNeed, addedWaterDemand, totalRainfall);
         }
