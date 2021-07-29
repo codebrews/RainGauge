@@ -6,7 +6,8 @@ namespace RainGauge
     {
         public static int DaysSinceWatering()
         {
-            Console.Write("Not counting rainfall, how many full days have passed since your garden was watered?: ");
+            Console.Write("Not counting rainfall, how many full days have passed since your " +
+                "garden was watered?: ");
             string input = Console.ReadLine();
             int daysSinceWatering;
             int.TryParse(input, out daysSinceWatering);
@@ -28,8 +29,7 @@ namespace RainGauge
 
         public static double BaseWaterNeed(int daysSinceWatering)
         {
-            double need = (double)daysSinceWatering / 7;
-            return need;
+            return (double)daysSinceWatering / 7;
         }
 
         ///Returns increased water demand by factoring an increase of .5 inches for each 10 degrees above 60.
