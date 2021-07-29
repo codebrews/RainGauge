@@ -32,12 +32,12 @@ namespace RainGauge
             return need;
         }
 
-        /*Returns increased water demand by factoring an increase of .5 inches for each 10 degrees above 60.
-            This formula is for weekly increased demand so it divides by 7 to get the daily increase.*/
+        ///Returns increased water demand by factoring an increase of .5 inches for each 10 degrees above 60.
+        ///This formula is for weekly increased demand so it divides by 7 to get the daily increase.
         public static double IncreaseWaterDemands(int daysSinceWatering, APIWeatherData weatherData)
         {
             //double increasedDemand = 0;
-            double baseTemp = 60;
+            double baseTemp = 60; //temps <= 60 will not increase water demands
             double tempFactor = 10;
             double waterFactor = .5;
             double daysPerWeek = 7;
