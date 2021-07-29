@@ -36,21 +36,10 @@ namespace RainGauge
         ///This formula is for weekly increased demand so it divides by 7 to get the daily increase.
         public static double IncreaseWaterDemands(int daysSinceWatering, APIWeatherData weatherData)
         {
-            //double increasedDemand = 0;
             double baseTemp = 60; //temps <= 60 will not increase water demands
             double tempFactor = 10;
             double waterFactor = .5;
             double daysPerWeek = 7;
-
-            //for (int i = 1; i <= daysSinceWatering; i++)
-            //{
-            //    double avgTemp = weatherData.Days[weatherData.Days.Count - i].Temp;
-            //    if (avgTemp > baseTemp)
-            //    {
-            //        increasedDemand += (avgTemp - baseTemp) / tempFactor * waterFactor / daysPerWeek;
-            //    }
-            //}
-            //return increasedDemand;
 
             return weatherData.Days.Reverse<Day>()
                 .Take(daysSinceWatering)
@@ -60,13 +49,6 @@ namespace RainGauge
 
         public static double TotalRainfall(int daysSinceWatering, APIWeatherData weatherData)
         {
-            //double totalRainfall = 0;
-            //for (int i = 1; i <= daysSinceWatering; i++)
-            //{
-            //    totalRainfall += weatherData.Days[weatherData.Days.Count - i].Precip;
-            //}
-            //return totalRainfall;
-
             return weatherData.Days.Reverse<Day>().Take(daysSinceWatering).Sum(d => d.Precipitation);
         }
 
